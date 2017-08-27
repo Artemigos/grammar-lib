@@ -16,7 +16,7 @@ namespace GrammarLib
 
         public List<Token<TToken>> Tokenize(string data)
         {
-            var input = data;
+            var input = data.Trim();
             var result = new List<Token<TToken>>();
 
             while (input != string.Empty)

@@ -1,0 +1,21 @@
+{
+    "version": "0.1.0",
+    "command": "dotnet",
+    "isShellCommand": true,
+    "args": [],
+    "tasks": [
+        {
+            "taskName": "build",
+            "args": [
+                "${workspaceRoot}/ConsoleApp7/ConsoleApp7.csproj"
+            ],
+            "isBuildCommand": true,
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "taskName": "run",
+            "command": "dotnet run --project ${workspaceRoot}/ConsoleApp7/ConsoleApp7.csproj",
+            "isShellCommand": true
+        }
+    ]
+}

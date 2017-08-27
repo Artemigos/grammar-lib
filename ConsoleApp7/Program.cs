@@ -1,6 +1,8 @@
-﻿using GrammarLib;
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using GrammarLib;
+using GrammarLib.GrammarLang;
 
 using static GrammarLib.GrammarBuilder<ConsoleApp7.Program.TokenType, ConsoleApp7.Program.SymbolType>;
 
@@ -45,16 +47,40 @@ namespace ConsoleApp7
         static void Main(string[] args)
         {
             var grammar = FuncGrammar();
-            var testCase = "def f(x, y) g(x, h(1, y), i()) end";
-            //VerboseTest(grammar, testCase);
-            //SimpleTest(grammar, testCase);
+            // var testCase = "def f(x, y) g(x, h(1, y), i()) end";
+            // VerboseTest(grammar, testCase);
+            // SimpleTest(grammar, testCase);
+            GrammarParsingTest();
 
-            Console.ReadKey(true);
+            if (!Console.IsInputRedirected)
+                Console.ReadKey(true);
         }
 
-        private static void GrammarParsingTest(string grammarText)
+        private static void GrammarParsingTest()
         {
-            var grammar = 
+            var grammar = GrammarLib.GrammarLang.Grammar.Create();
+            var test = @"
+INT    := ""\b\d+\b""
+OP     := ""[+-*/]""
+OPAREN := ""\(""
+CPAREN := ""\)""
+
+EXPR := EXPR OP EXPR
+EXPR := OPAREN EXPR CPAREN
+EXPR := INT
+
+> EXPR
+";
+            var tokens = grammar.Tokenize(test);
+            Console.WriteLine(string.Join("\n", tokens));
+
+            // var result = grammar.Parse(tokens);
+
+            // if (result != null)
+            // {
+            //     var printer = new PrintVisitor<GrammarToken, GrammarSymbol>();
+            //     printer.Visit(result);
+            // }
         }
 
         private static void SimpleTest(Grammar<TokenType, SymbolType> grammar, string testCase)
