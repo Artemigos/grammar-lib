@@ -80,7 +80,7 @@ namespace GrammarLib
 
         private (bool success, AstNode<TToken, TSymbol> result) TryParseToken(TokenStream<TToken> stream, TToken token)
         {
-            if (_tEq.Equals(stream.Peek().Type, token))
+            if (!stream.EOS && _tEq.Equals(stream.Peek().Type, token))
             {
                 var t = stream.Consume();
                 return (true, new AstNode<TToken, TSymbol>(t));

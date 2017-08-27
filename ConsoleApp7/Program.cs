@@ -1,55 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using GrammarLib;
 using GrammarLib.GrammarLang;
-
-using static GrammarLib.GrammarBuilder<ConsoleApp7.Program.TokenType, ConsoleApp7.Program.SymbolType>;
 
 namespace ConsoleApp7
 {
     public class Program
     {
-        public enum TokenType { Def, End, Identifier, Integer, OParen, CParen, Comma }
-        public enum SymbolType { FuncDef, ParamList, Param, BodyExpr, VarExpr, IntExpr, CallExpr, CallParams }
-
-        public static Grammar<TokenType, SymbolType> FuncGrammar() =>
-            Grammar(
-                Tokens(
-                    Token(TokenType.Def, @"\bdef\b"),
-                    Token(TokenType.End, @"\bend\b"),
-                    Token(TokenType.Identifier, @"\b[a-zA-Z]+\b"),
-                    Token(TokenType.Integer, @"\b\d+\b"),
-                    Token(TokenType.OParen, @"\("),
-                    Token(TokenType.CParen, @"\)"),
-                    Token(TokenType.Comma, @",")
-                ),
-                Rules(
-                    Rule(SymbolType.IntExpr, T(TokenType.Integer)),
-                    Rule(SymbolType.VarExpr, T(TokenType.Identifier)),
-                    Rule(SymbolType.CallExpr, T(TokenType.Identifier), T(TokenType.OParen), S(SymbolType.CallParams), T(TokenType.CParen)),
-                    Rule(SymbolType.CallParams, S(SymbolType.BodyExpr), T(TokenType.Comma), S(SymbolType.CallParams)),
-                    Rule(SymbolType.CallParams, S(SymbolType.BodyExpr)),
-                    Rule(SymbolType.CallParams, E()),
-                    Rule(SymbolType.BodyExpr, S(SymbolType.IntExpr)),
-                    Rule(SymbolType.BodyExpr, S(SymbolType.CallExpr)),
-                    Rule(SymbolType.BodyExpr, S(SymbolType.VarExpr)),
-
-                    Rule(SymbolType.Param, T(TokenType.Identifier)),
-                    Rule(SymbolType.ParamList, S(SymbolType.Param), T(TokenType.Comma), S(SymbolType.ParamList)),
-                    Rule(SymbolType.ParamList, S(SymbolType.Param)),
-                    Rule(SymbolType.ParamList, E()),
-                    Rule(SymbolType.FuncDef, T(TokenType.Def), T(TokenType.Identifier), T(TokenType.OParen), S(SymbolType.ParamList), T(TokenType.CParen), S(SymbolType.BodyExpr), T(TokenType.End))
-                ),
-                SymbolType.FuncDef
-            );
 
         static void Main(string[] args)
         {
-            var grammar = FuncGrammar();
-            // var testCase = "def f(x, y) g(x, h(1, y), i()) end";
-            // VerboseTest(grammar, testCase);
-            // SimpleTest(grammar, testCase);
             GrammarParsingTest();
 
             if (!Console.IsInputRedirected)
@@ -58,74 +18,50 @@ namespace ConsoleApp7
 
         private static void GrammarParsingTest()
         {
-            var grammar = GrammarLib.GrammarLang.Grammar.Create();
+            var grammar = Grammar.Create();
             var test = @"
-INT    := ""\b\d+\b""
-OP     := ""[+-*/]""
-OPAREN := ""\(""
-CPAREN := ""\)""
+INT    := ""\b\d+\b"";
+OP     := ""[+\-*/]"";
+OPAREN := ""\("";
+CPAREN := ""\)"";
 
-EXPR := EXPR OP EXPR
-EXPR := OPAREN EXPR CPAREN
-EXPR := INT
+---
 
-> EXPR
+EXPR := OPAREN EXPR CPAREN OP EXPR;
+EXPR := INT OP EXPR;
+EXPR := OPAREN EXPR CPAREN;
+EXPR := INT;
+
+> EXPR;
 ";
             var tokens = grammar.Tokenize(test);
             Console.WriteLine(string.Join("\n", tokens));
 
-            // var result = grammar.Parse(tokens);
+            var result = grammar.Parse(tokens);
 
-            // if (result != null)
-            // {
-            //     var printer = new PrintVisitor<GrammarToken, GrammarSymbol>();
-            //     printer.Visit(result);
-            // }
-        }
-
-        private static void SimpleTest(Grammar<TokenType, SymbolType> grammar, string testCase)
-        {
-            var ast = grammar.Parse(testCase);
-
-            if (ast == null)
+            if (result != null)
             {
-                Console.WriteLine("Parsing failed.");
-            }
-            else
-            {
-                var printer = new PrintVisitor<TokenType, SymbolType>();
-                printer.Visit(ast);
-            }
-        }
-
-        private static void VerboseTest(Grammar<TokenType, SymbolType> grammar, string testCase)
-        {
-            List<Token<TokenType>> tokens = null;
-
-            try
-            {
-                tokens = grammar.Tokenize(testCase);
-                Console.WriteLine("Tokenizing phase:");
-                Console.WriteLine(string.Join("\n", tokens));
-            }
-            catch (FormatException e)
-            {
-                Console.WriteLine(e.ToString());
+                var printer = new PrintVisitor<GrammarToken, GrammarSymbol>();
+                printer.Visit(result);
             }
 
-            Console.WriteLine();
+            Console.WriteLine("Now running the resultin grammar:");
 
-            var ast = grammar.Parse(tokens);
+            var reader = new Reader();
+            var resultGrammar = reader.Read(result);
 
-            if (ast == null)
+            var test2 = "(4 + (2 * 8)) / (6 - 1)";
+            Console.WriteLine("Input: " + test2);
+
+            var tokens2 = resultGrammar.Tokenize(test2);
+            Console.WriteLine(string.Join("\n", tokens2));
+
+            var result2 = resultGrammar.Parse(tokens2);
+
+            if (result2 != null)
             {
-                Console.WriteLine("Parsing failed.");
-            }
-            else
-            {
-                Console.WriteLine("Parsing succeeded:");
-                var printer = new PrintVisitor<TokenType, SymbolType>();
-                printer.Visit(ast);
+                var printer = new PrintVisitor<string, string>();
+                printer.Visit(result2);
             }
         }
     }
