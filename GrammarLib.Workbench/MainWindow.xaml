@@ -1,0 +1,46 @@
+﻿<Window x:Class="GrammarLib.Workbench.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GrammarLib.Workbench"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Label Content="Grammar:" />
+        <Label
+            Grid.Column="1"
+            Grid.Row="0"
+            Content="Test:" />
+
+        <TextBox
+            x:Name="Lang"
+            Grid.Column="0"
+            Grid.Row="1"
+            AcceptsReturn="True"  />
+
+        <TextBox
+            x:Name="Test"
+            Grid.Column="1"
+            Grid.Row="1"
+            AcceptsReturn="True" />
+
+        <Button
+            Grid.Column="0"
+            Grid.Row="2"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            Click="Parse_OnClick"
+            Content="Parse" />
+    </Grid>
+</Window>
