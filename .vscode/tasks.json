@@ -7,14 +7,14 @@
         {
             "taskName": "build",
             "args": [
-                "${workspaceRoot}/ConsoleApp7/ConsoleApp7.csproj"
+                "${workspaceRoot}/GrammarLib.TestApp/GrammarLib.TestApp.csproj"
             ],
             "isBuildCommand": true,
             "problemMatcher": "$msCompile"
         },
         {
             "taskName": "run",
-            "command": "dotnet run --project ${workspaceRoot}/ConsoleApp7/ConsoleApp7.csproj",
+            "command": "dotnet run --project ${workspaceRoot}/GrammarLib.TestApp/GrammarLib.TestApp.csproj",
             "isShellCommand": true
         }
     ]

@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using GrammarLib;
 using GrammarLib.GrammarLang;
 
-using static GrammarLib.GrammarBuilder<ConsoleApp7.Program.TokenType, ConsoleApp7.Program.SymbolType>;
+using static GrammarLib.GrammarBuilder<GrammarLib.TestApp.Program.TokenType, GrammarLib.TestApp.Program.SymbolType>;
 
-namespace ConsoleApp7
+namespace GrammarLib.TestApp
 {
     public class Program
     {
